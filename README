@@ -1,0 +1,96 @@
+Musat Mihai-Robert
+Grupa 323CB
+
+======================================================Tema 1 - Greedy & DP======================================================
+
+Problema 1 (Greedy)
+-------------------
+
+Pentru rezolvarea acestei probleme, am observat mai intai ca la fiecare pas, pentru ca un jucator sa isi maximizeze diferenta 
+de scor dintre el si adversarul sau, este nevoie sa aleaga maximul global din vector.Acest lucru, impreuna cu faptul ca se garanteaza
+ca cei doi jucatori joaca optim m-a facut sa ma gandesc la o abordare Greedy a problemei.Astfel, mai intai m-am gandit sa sortez 
+crescator vectorul, si in acest fel obtin elementele de la cel mai mic pe prima pozitie pana la cel mai mare pe ultima pozitie.
+Conform enuntului, diferenta maxima este cea dintre scorul lui Tuzgu si cel al lui Ritza astfel ca jucatorul la care vreau sa maximizez profitul la pasul curent este Tuzgu si abia apoi, la pasul urmator, voi maximiza si scorul obtinut de Ritza.In acest caz, m-am
+gandit sa parcurg vectorul de la final si daca sunt pe pozitie para (Tuzgu e la mutare), atunci adun elementul curent, iar daca 
+sunt pe pozitie impara (Ritza e la mutare), inseamna ca trebuie sa scad elementul curent.
+
+Complexitatea (worst-case) a algoritmului implementat de mine este, dupa cum urmeaza: 
+-complexitate temporala: citire si salvare date = O(n)                 |
+		         sortare vector = O(n * log(n)) 	       | 
+			 parcurgere vector si aflare diferenta = O(n)  | => total: O(n * log(n))
+			 scriere date = O(1) 			       |
+-complexitate spatiala: O(n) deoarece folosesc un vector de n elemente pentru a stoca sirul dat ca input  
+
+
+Problema 2 (DP)
+---------------
+
+Pentru rezolvarea acestei probleme m-am gandit initial la o abordare Greedy, insa mi-am dat seama ca obtineam subprobleme
+care se suprapun, ceea ce scade eficienta algoritmului.Prin urmare, am ajuns la concluzia ca problema poate fi solutionata 
+doar prin programare dinamica, avand in vedere faptul ca ambii jucatori joaca optim.
+Astfel, m-am gandit sa construiesc matricea dp[i][j] cu semnificatia :
+
+dp[i][j] = diferenta maxima pe care pot sa o obtin daca elimin j elemente din primele i elemente din vectorul sortat
+
+In implementarea algoritmului meu, m-am gandit ca daca k = 0, atunci la fiecare pas, cel aflat la mutare va alege cel mai 
+mare numar din sir.Daca am k nenul, atunci inseamna ca trebuie sa sortez descrescator vectorul initial si pentru fiecare element 
+din vectorul sortat am 2 posibilitati:
+1) Aleg sa elimin numarul => obtin ca dp[i][j] = dp[i - 1][j - 1]
+2) Aleg sa pastrez numarul => 
+	i) Daca acest numar este pe o pozitie impara in sirul final ( (i - j) % 2 == 1 ) => 
+		dp[i][j] = dp[i - 1][j] + v[i] (pentru ca la mutare este primul jucator)
+	ii) Daca acest numar este pe o pozitie para in sirul final ( (i - j) % 2 == 0 ) =>
+		dp[i][j] = dp[i - 1][j] - v[i] (pentru ca la mutare este al doilea jucator)
+
+La fiecare pas, dp[i][j] va fi maximul dintre cazurile 1) si 2).In cazul in care j = 0, adica nu am eliminat niciun numar dintre 
+cele mai mari i, vom lua rezultatul doar din cazul 2).
+
+Complexitatea (worst-case) a algoritmului implementat de mine este, dupa cum urmeaza : 
+-complexitate temporala: citire si salvare date = O(n)	      |
+			 sortare vector = O(n * log(n))	      |
+			 inversare vector = O(n)	      | => total: O(n * k)
+			 calculare dinamica = O(n * k)        |
+			 afisare rezultat = O(1)              |
+-complexitate spatiala: O(n^2) deoarece costul alocarii de memorie suplimentara pentru matricea dp[][] este mai mare 
+			decat O(n) (costul alocarii vectorului in care stochez sirul dat ca input)
+
+
+Problema 3 (DP)
+---------------
+
+De asemenea, si in cazul acestei probleme m-am gandit ca se poate rezolva folosind programare dinamica, deoarece am recunoscut
+un tipar de problema clasica care se rezolva cu programare dinamica, si anume parantezare optima de matrici.In particular, la aceasta 
+problema, vreau sa gasesc diferenta maxima pe care o poate obtine Tuzgu daca fiecare jucator poate elimina din sir fie cel mai din 
+stanga numar, fie cel mai din dreapta numar si ca cei doi jucatori joaca optim.Astfel, pentru fiecare interval de 
+lungime cel putin 1, imi construiesc matricea de programare dinamica cu urmatoarea semnificatie:
+
+dp[i][j] = diferenta maxima pe care o poate obtine Tuzgu pe fiecare interval [i..j]
+
+Pentru a imi construi elementele matricii dp, iterez prin fiecare interval de lungime cel putin 1 si am doua posibiliati:
+1) Ma aflu pe pozitie para => Tuzgu e la mutare => am din din nou doua cazuri:
+	i) daca iau din stanga, vad cat ar fi facut pe intervalul [i+1..j] si adun elementul curent
+		dp[i][j] = dp[i + 1][j] + v[i]
+	ii) daca iau din dreapta, vad cat ar fi facut pe [i..j-1] si adun elementul curent
+		dp[i][j] = dp[i][j - 1] + v[i]
+
+	La fiecare pas, scorul maxim obtinut de Tuzgu va fi maximul dintre situatiile i) si ii).
+		
+2) Ma aflu pe pozitie impara => Ritza e la mutare => am din nou doua cazuri:
+	i) daca iau din stanga, vad cat ar fi facut pe intervalul [i+1..j] si scad elementul curent
+		dp[i][j] = dp[i + 1][j] - v[i]
+	ii) daca iau din dreapta, vad cat ar fi facut pe [i..j-1] si scad elementul curent
+		dp[i][j] = dp[i][j - 1] - v[i]
+
+	La fiecare pas, scorul maxim obtinut de Ritza va fi minimul dintre situatiile i) si ii) deoarece eu vreau sa obtin
+diferenta maxima dintre scorul lui Tuzgu si scorul lui Ritza.
+
+Complexitatea (worst-case) a algoritmului implementat de mine este, dupa cum urmeaza: 
+-complexitate temporala: -citire date de intrare = O(n)               |
+			 -calculare elemente din matricea dp = O(n^2) | => total: O(n^2)
+			 -afisare rezultat = O(1) 		      |
+-complexitate spatiala: analog problemei anterioare, este O(n^2) datorita alocarii matricii de programare dinamica dp[][]
+
+P.S.: Numele personajelor principale din enuntul problemelor este absolut genial! <3
+      Chiar ma saturasem sa aud numai de Gigel in probleme...
+
+
