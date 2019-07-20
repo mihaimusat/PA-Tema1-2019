@@ -89,8 +89,3 @@ Complexitatea (worst-case) a algoritmului implementat de mine este, dupa cum urm
 			 -calculare elemente din matricea dp = O(n^2) | => total: O(n^2)
 			 -afisare rezultat = O(1) 		      |
 -complexitate spatiala: analog problemei anterioare, este O(n^2) datorita alocarii matricii de programare dinamica dp[][]
-
-P.S.: Numele personajelor principale din enuntul problemelor este absolut genial! <3
-      Chiar ma saturasem sa aud numai de Gigel in probleme...
-
-
